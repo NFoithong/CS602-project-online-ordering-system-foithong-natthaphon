@@ -1,0 +1,92 @@
+{
+  "info": {
+    "name": "Online Ordering API (Local)",
+    "_postman_id": "b2f2f90e-0000-0000-0000-000000000001",
+    "description": "REST endpoints for Online Ordering (login, admin items, public menu). Uses {{base_url}} and {{token}} from environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Admin Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@123\"\n}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data && data.token) {",
+              "  pm.environment.set('token', data.token);",
+              "  console.log('JWT stored to environment variable: token');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu (Admin) - List All Items",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/menu/admin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "menu",
+            "admin"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Menu (Public) - List Available Items",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/menu",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "menu"
+          ]
+        }
+      }
+    }
+  ]
+}

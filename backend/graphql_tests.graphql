@@ -1,0 +1,39 @@
+# Point your GraphQL client (Apollo Sandbox/Server) to http://localhost:4000/graphql
+
+# Login as admin (use HTTP headers panel to set Authorization after obtaining token from REST /api/auth/login):
+# { "Authorization": "Bearer <token>" }
+
+query MenuAndCategories {
+  categories { id name }
+  menu { id name price isAvailable categories { id name } }
+}
+
+mutation Register {
+  register(email: "new@user.com", password: "Passw0rd!", name: "New User") {
+    token
+    user { id email role name }
+  }
+}
+
+mutation Login {
+  login(email: "customer@example.com", password: "Customer@123") {
+    token
+    user { id email role name }
+  }
+}
+
+mutation AdminAddMenu {
+  addMenuItem(input: { name: "Milkshake", price: 4.25, description: "Vanilla", categories: [] }) {
+    id name price isAvailable
+  }
+}
+
+mutation PlaceOrder {
+  placeOrder(items: [{ menuItem: "<REPLACE_MENU_ID>", quantity: 2 }], fulfillment: "pickup") {
+    id total status
+  }
+}
+
+query MyOrders {
+  myOrders { id total status createdAt }
+}
