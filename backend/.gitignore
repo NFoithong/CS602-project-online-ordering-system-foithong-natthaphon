@@ -1,0 +1,11 @@
+node_modules/
+
+dist/
+build/
+
+# Ignores all files with the .log extension.
+*.log
+
+# env files
+.env
+.env.*
