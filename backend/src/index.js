@@ -16,6 +16,7 @@ const categoriesRoutes = require('./routes/categories');
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
+const { createMenuItemLoader } = require('./graphql/loaders');
 
 const app = express();
 app.use(cors());
@@ -44,7 +45,12 @@ app.use('/api/categories', categoriesRoutes);
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req }) => ({ authHeader: req.headers.authorization || '' }),
+    context: ({ req }) => ({ 
+      authHeader: req.headers.authorization || '',
+      loaders: {
+        menuItems: createMenuItemLoader()  // new per request },
+      }
+   }),
   });
   await server.start();
   server.applyMiddleware({ app, path: '/graphql' });

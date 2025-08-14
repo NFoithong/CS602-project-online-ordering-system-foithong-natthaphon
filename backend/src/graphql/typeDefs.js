@@ -2,11 +2,49 @@ const { gql } = require('apollo-server-express');
 
 module.exports = gql`
 
-type User { id: ID! email: String! role: String! name: String! }
-type Category { id: ID! name: String! }
-type MenuItem { id: ID! name: String! description: String price: Float! imageUrl: String categories: [Category!]! isAvailable: Boolean! }
-type OrderItem { menuItem: ID! name: String! price: Float! quantity: Int! notes: String }
-type Order { id: ID! user: User! items: [OrderItem!]! subtotal: Float! tax: Float! total: Float! status: String! fulfillment: String! address: String createdAt: String }
+type User { 
+  id: ID! 
+  email: String! 
+  role: String! 
+  name: String! 
+}
+
+type Category { 
+  id: ID! 
+  name: String! 
+}
+
+type MenuItem { 
+  id: ID! 
+  name: String! 
+  description: String 
+  price: Float! 
+  imageUrl: String 
+  categories: [Category!]! 
+  isAvailable: Boolean! 
+}
+
+type OrderItem { 
+  menuItem: ID! 
+  name: String! 
+  price: Float! 
+  quantity: Int! 
+  notes: String 
+  menuItemNode: MenuItem 
+}
+
+type Order { 
+  id: ID! 
+  user: User! 
+  items: [OrderItem!]! 
+  subtotal: Float! 
+  tax: Float! 
+  total: Float! 
+  status: String! 
+  fulfillment: String! 
+  address: String 
+  createdAt: String 
+}
 
 type Query {
   me: User
@@ -15,10 +53,25 @@ type Query {
   myOrders: [Order!]!
 }
 
-type AuthPayload { token: String! user: User! }
+type AuthPayload { 
+  token: String! 
+  user: User! 
+}
 
-input OrderItemInput { menuItem: ID!, quantity: Int!, notes: String }
-input MenuItemInput { name: String!, description: String, price: Float!, imageUrl: String, categories: [ID!], isAvailable: Boolean }
+input OrderItemInput { 
+  menuItem: ID!, 
+  quantity: Int!, 
+  notes: String 
+}
+
+input MenuItemInput { 
+  name: String!, 
+  description: String, 
+  price: Float!, 
+  imageUrl: String, 
+  categories: [ID!], 
+  isAvailable: Boolean 
+}
 
 type Mutation {
   register(email: String!, password: String!, name: String!): AuthPayload!

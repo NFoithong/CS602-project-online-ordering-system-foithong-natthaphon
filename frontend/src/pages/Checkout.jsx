@@ -11,7 +11,7 @@ import { Elements, useStripe, useElements, PaymentElement } from '@stripe/react-
 import { loadStripe } from '@stripe/stripe-js'
 
 // const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '')
-const PK = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+const PK = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 const stripePromise = PK ? loadStripe(PK) : null
 
 function Review({ items, totals }){
@@ -207,21 +207,27 @@ function ElementsWrapper({ items, totals }){
         })
         // setClientSecret(res.clientSecret)
         // If api() auto-logged us out, res will be undefined.
-          if (!res || !res.clientSecret) {
-          setError('Your session expired. Please log in again.')
-          setTimeout(() => { window.location.href = '/login?sessionExpired=1' }, 1200)
+        //   if (!res || !res.clientSecret) {
+        //   setError('Your session expired. Please log in again.')
+        //   setTimeout(() => { window.location.href = '/login?sessionExpired=1' }, 1200)
+        //   return
+        // }
+        if (!res || !res.clientSecret) {
+          setError('Failed to initialize payment (no client secret).')
+          console.warn('createPaymentIntent response:', res)
           return
         }
         setClientSecret(res.clientSecret)
-      } catch(e){
-        // setError('Failed to initialize payment: ' + String(e.message))
-        const msg = String(e && e.message || e)
-        if (/AUTH_LOGOUT|invalid token user|unauthorized|missing token|invalid token/i.test(msg)) {
-        setError('Your session expired. Please log in again.')
-        setTimeout(() => { window.location.href = '/login?sessionExpired=1' }, 1200)
-        } else {
-          setError('Failed to initialize payment: ' + msg)
-        }
+        } catch(e){
+        setError('Failed to initialize payment: ' + String(e?.message || e))
+        // const msg = String(e && e.message || e)
+        // // if (/AUTH_LOGOUT|invalid token user|unauthorized|missing token|invalid token/i.test(msg)) {
+        // if (/AUTH_LOGOUT|invalid token user|invalid token|missing token|jwt expired|token expired/i.test(msg)) {
+        //   setError('Your session expired. Please log in again.')
+        //   setTimeout(() => { window.location.href = '/login?sessionExpired=1' }, 1200)
+        // } else {
+        //   setError('Failed to initialize payment: ' + msg)
+        // }
       }
     })()
   }, [items])

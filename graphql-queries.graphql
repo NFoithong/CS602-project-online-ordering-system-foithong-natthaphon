@@ -9,23 +9,28 @@
 # --- Query 1: Menu with Categories (works with admin or customer token) ---
 query GetMenu {
   menu {
-    _id
+    id
     name
     price
     description
-    categories { _id name }
+    categories { id name }
   }
 }
 
 # --- Query 2: My Orders (requires CUSTOMER token) ---
 query MyOrders {
   myOrders {
-    _id
+    id
     status
     total
     items {
       quantity
-      menuItem { name price }
+      menuItem
+      menuItemNode {
+        id
+        name
+        price
+      }
     }
     createdAt
   }

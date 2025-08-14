@@ -16,7 +16,14 @@ const OrderSchema = new mongoose.Schema({
   total: Number,
   status: { type: String, enum: ['pending','preparing','ready','completed','cancelled'], default: 'pending' },
   fulfillment: { type: String, enum: ['pickup','delivery','dinein'], default: 'pickup' },
-  address: String
+  address: String,
+  // Payment fields
+  paymentIntentId: String,
+  paymentStatus: { type: String, enum: ['unpaid','paid','failed','refunded'], default: 'unpaid' },
+  paidAt: Date,
+  amount: Number,      // amount in cents (mirrors Stripe PI amount)
+  currency: { type: String, default: 'usd' },
+  receiptUrl: String
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', OrderSchema);

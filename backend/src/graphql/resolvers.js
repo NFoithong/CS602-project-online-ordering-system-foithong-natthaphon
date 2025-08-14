@@ -12,13 +12,18 @@ function getUserFromAuthHeader(authHeader) {
   const token = parts.length === 2 && parts[0].toLowerCase() === 'bearer' ? parts[1] : authHeader;
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    return { id: payload.sub, role: payload.role, name: payload.name };
+    return { id: payload.id, role: payload.role, name: payload.name };
   } catch {
     return null;
   }
 }
 
 module.exports = {
+  OrderItem: {
+    menuItemNode: (parent, _args, { loaders }) => {
+      return loaders.menuItems.load(parent.menuItem);
+    },
+  },
   Query: {
     me: async (_, __, { authHeader }) => {
       const u = getUserFromAuthHeader(authHeader);

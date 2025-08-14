@@ -11,6 +11,7 @@ import AdminOrders from './pages/AdminOrders'
 import AdminCategories from './pages/AdminCategories'
 import { CartProvider, useCartCount } from './store/cart'
 import { getToken, getUser, logout } from './services/auth'
+import Register from './pages/Register'
 
 function Nav() {
   const user = getUser()
@@ -20,31 +21,31 @@ function Nav() {
   return (
     <nav style={{ display:'flex', gap:12, padding:10, borderBottom:'1px solid #ddd' }}>
       <Link to="/">Menu</Link>
-      {!isAdmin && (
-
-      <Link to="/cart" style={{ position:'relative', display:'inline-flex', alignItems:'center' }}>
-         Cart
-         {count > 0 && (
-           <span
-             style={{
-               marginLeft: 6,
-               minWidth: 18, height: 18,
-               borderRadius: 9,
-               padding: '0 6px',
-               fontSize: 12,
-               lineHeight: '18px',
-               textAlign: 'center',
-               color: '#fff',
-               background: '#111'
-             }}
-           >
-             {count}
-           </span>
-         )}
-      </Link>
+      {user?.role !== 'admin' && (
+        <Link to="/cart" style={{ position:'relative', display:'inline-flex', alignItems:'center' }}>
+          Cart
+          {count > 0 && (
+            <span
+              style={{
+                marginLeft: 6,
+                minWidth: 18, height: 18,
+                borderRadius: 9,
+                padding: '0 6px',
+                fontSize: 12,
+                lineHeight: '18px',
+                textAlign: 'center',
+                color: '#fff',
+                background: '#111'
+              }}
+            >
+              {count}
+            </span>
+          )}
+        </Link>
       )}
 
-      {user && !isAdmin && <Link to="/my-orders">My Orders</Link>}
+      {/* {user && !isAdmin && <Link to="/my-orders">My Orders</Link>} */}
+      {user && user.role !== 'admin' && <Link to="/my-orders">My Orders</Link>}
       {user?.role === 'admin' && (
         <>
           <Link to="/admin/items">Admin Items</Link>
@@ -52,7 +53,13 @@ function Nav() {
           <Link to="/admin/categories">Admin Categories</Link>
         </>
       )}
-      {!user && <Link to="/login">Login</Link>}
+      {/* {!user && <Link to="/login">Login</Link>} */}
+      {!user && (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Sign up</Link>
+        </>
+      )}
       {user && <button onClick={()=>{ logout(); location.href='/' }}>Logout ({user.name})</button>}
     </nav>
   )
@@ -74,6 +81,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Menu />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Guard><Checkout /></Guard>} />
           <Route path="/my-orders" element={<Guard><MyOrders /></Guard>} />

@@ -30,7 +30,8 @@ router.post('/', async (req, res) => {
         const id = pi.id;
         await Order.updateMany(
           { paymentIntentId: id },
-          { $set: { paymentStatus: 'paid' } }
+          // { $set: { paymentStatus: 'paid' } }
+          { $set: { paymentStatus: 'paid', paidAt: new Date(pi.created * 1000), amount: pi.amount, currency: pi.currency || 'usd', receiptUrl: charge?.receipt_url || null } }
         );
         try { sseHub.broadcast('order_payment_updated', { paymentIntentId: id, paymentStatus: 'paid' }); } catch(_) {}
         break;
